@@ -1,490 +1,382 @@
-<!DOCTYPE html>
+
+<script src="http://www.google.com/jsapi" type="text/javascript"></script> 
+<script type="text/javascript">google.load("jquery", "1.3.2");</script>
+
+<link href="https://fonts.cdnfonts.com/css/chalkduster" rel="stylesheet">
+<style>
+    @import url('https://fonts.cdnfonts.com/css/chalkduster');
+</style>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+<!-- If you need support for additional languages, include them here -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<link href="style.css" rel="stylesheet"/>
+<link href="fontawesome.all.min.css" rel="stylesheet"/>
+<link ref="equation style" href="eq.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+<script defer src="fontawesome.all.min.js"></script>
+
+
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta name="description"
-        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
-  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nerfies: Deformable Neural Radiance Fields</title>
+    <!-- <style>
+        body, html {
+          height: 200%;
+          margin: 0;
+          background: linear-gradient(to bottom, rgba(157, 255, 0, 0.749), rgba(255, 157, 0, 0.629), rgba(255, 157, 0, 0.629), rgba(157, 255, 0, 0.749));
+        }
+    </style> -->
+  <head>
+		<title>EDF</title>
+		<meta property="og:title" content="Emphasizing Discriminative Features for Dataset Distillation in Complex Scenarios" />
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </head>
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-
-    gtag('js', new Date());
-
-    gtag('config', 'G-PYVRSFMDRL');
-  </script>
-
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
-        rel="stylesheet">
-
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="icon" href="./static/images/favicon.svg">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
-</head>
-<body>
-
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-  <div class="navbar-menu">
-    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="https://keunhong.com">
-      <span class="icon">
-          <i class="fas fa-home"></i>
-      </span>
-      </a>
-
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
-          More Research
-        </a>
-        <div class="navbar-dropdown">
-          <a class="navbar-item" href="https://hypernerf.github.io">
-            HyperNeRF
-          </a>
-          <a class="navbar-item" href="https://nerfies.github.io">
-            Nerfies
-          </a>
-          <a class="navbar-item" href="https://latentfusion.github.io">
-            LatentFusion
-          </a>
-          <a class="navbar-item" href="https://photoshape.github.io">
-            PhotoShape
-          </a>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</nav>
+  <body>
+    <br>
+        <center>
+			  <span class="near-black" style="font-size:36px;font-weight:bold">Emphasizing Discriminative Features <br>for Dataset Distillation in Complex Scenarios</span>
+			  
+			  <br>
+              <br>
 
 
-<section class="hero">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Nerfies: Deformable Neural Radiance Fields</h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="https://keunhong.com">Keunhong Park</a><sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://utkarshsinha.com">Utkarsh Sinha</a><sup>2</sup>,</span>
-            <span class="author-block">
-              <a href="https://jonbarron.info">Jonathan T. Barron</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="http://sofienbouaziz.com">Sofien Bouaziz</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://www.danbgoldman.com">Dan B Goldman</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://homes.cs.washington.edu/~seitz/">Steven M. Seitz</a><sup>1,2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="http://www.ricardomartinbrualla.com">Ricardo Martin-Brualla</a><sup>2</sup>
-            </span>
-          </div>
+	  		<table align=center width=800px>
+	  	        <td align=center width=150px>
+	  				<center>
+	  					<span style="font-size:20px;left: 0px"><a href="https://kaiwang960112.github.io/">Kai Wang</a>
+						<sup style="font-size: 0.7em;left: -0.3em">1,2*</sup>
+						</span>
+		  			</center>
+		  		</td>
+	  	        <td align=center width=150px>
+	  				<center>
+	  					<span style="font-size:20px;left: 0px">
+                        <a href="https://lizekai-richard.github.io/"> -->
+                            Zekai Li<sup>1,2*</sup>
+                         </a>
+						  <sup style="font-size: 0.7em;left: -0.3em">1,2</sup>
+						</span>
+		  			</center>
+		  		</td>
+	  	        <td align=center width=150px>
+                    <center>
+                        <span style="font-size:20px;left: 0px"><a href="https://zhiqic.github.io/homepage/index.html">Zhi-Qi Cheng</a>
+						<sup style="font-size: 0.7em;left: -0.3em">2</sup>
+						</span>
+                    </center>
+                </td>
+                
+                <td align=center width=150px>
+                    <center>
+                        <span style="font-size:20px;left: 0px"><a href="https://www.samirkhaki.com/">Samir Khaki</a>
+                      <sup style="font-size: 0.7em;left: -0.3em">3</sup>
+                      </span>
+                    </center>
+                </td>
+			</table>
 
-          <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>University of Washington,</span>
-            <span class="author-block"><sup>2</sup>Google Research</span>
-          </div>
+            <table align=center width=900px>
+                
+                <td align=center width=150px>
+                    <center>
+                        <span style="font-size:20px;left: 0px"><a href="https://ahmadsajedii.github.io/">Ahmad Sajedi</a>
+                        <sup style="font-size: 0.7em;left: -0.3em">3</sup>
+                      </span>
+                    </center>
+                </td>
+				
+				<td align=center width=150px>
+					<center>
+						<span style="font-size:20px;left: 0px"><a href="https://scholar.google.com/citations?user=v1CRzeAAAAAJ&hl=en">Ramakrishna
+Vedantam</a>
+						<sup style="font-size: 0.7em;left: -0.3em">4</sup>
+					  </span>
+					</center>
+				</td>
 
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <!-- PDF Link. -->
-              <span class="link-block">
-                <a href="https://arxiv.org/pdf/2011.12948"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Paper</span>
-                </a>
-              </span>
-              <span class="link-block">
-                <a href="https://arxiv.org/abs/2011.12948"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>arXiv</span>
-                </a>
-              </span>
-              <!-- Video Link. -->
-              <span class="link-block">
-                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-youtube"></i>
-                  </span>
-                  <span>Video</span>
-                </a>
-              </span>
-              <!-- Code Link. -->
-              <span class="link-block">
-                <a href="https://github.com/google/nerfies"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code</span>
-                  </a>
-              </span>
-              <!-- Dataset Link. -->
-              <span class="link-block">
-                <a href="https://github.com/google/nerfies/releases/tag/0.1"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="far fa-images"></i>
-                  </span>
-                  <span>Data</span>
-                  </a>
-            </div>
+                <td align=center width=150px>
+					<center>
+						<span style="font-size:20px;left: 0px"><a href="https://www.comm.utoronto.ca/~kostas/">Konstantinos N Plataniotis</a>
+						<sup style="font-size: 0.7em;left: -0.3em">3</sup>
+					  </span>
+					</center>
+				</td>
 
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+                <td align=center width=150px>
+					<center>
+						<span style="font-size:20px;left: 0px"><a href="https://www.cs.cmu.edu/~alex/">Alexander Hauptmann</a>
+						<sup style="font-size: 0.7em;left: -0.3em">2</sup>
+					  </span>
+					</center>
+				</td>
 
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <video id="teaser" autoplay muted loop playsinline height="100%">
-        <source src="./static/videos/teaser.mp4"
-                type="video/mp4">
-      </video>
-      <h2 class="subtitle has-text-centered">
-        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
-        free-viewpoint
-        portraits.
-      </h2>
-    </div>
-  </div>
-</section>
+                <td align=center width=150px>
+                    <center>
+                        <span style="font-size:20px;left: 0px"><a href="https://www.comp.nus.edu.sg/~youy/">Yang You</a>
+                        <sup style="font-size: 0.7em;left: -0.3em">1</sup>
+                      </span>
+                    </center>
+                </td>
+          </table>
 
+			<table align="center" width="600px">
+				<tbody>
+                    <tr>
+                        <td style="padding:10px">
+                            <!-- <sup style="padding-right: 3px;font-size: 18px;top: -1.8em;">1</sup><img style="height:30px;" src="https://english.sztu.edu.cn/images/logo01.png"> -->
+                            <sup style="padding-right: 3px;font-size: 18px;top: -1.8em;">1</sup><img style="height:30px;" src="figs/NUS.jpg">
+                        </td>
+						<td style="padding:10px">
+							<!-- <sup style="padding-right: 3px;font-size: 18px;top: -1.8em;">2</sup><img style="height:30px;" src="https://www.nus.edu.sg/images/default-source/identity-images/NUS_logo_full-horizontal.jpg"> -->
+                             <sup style="padding-right: 3px;font-size: 18px;top: -1.8em;">2</sup><img style="height:30px;" src="figs/cmu.png">
+						</td>
+						<td style="padding:10px">
+							<!-- <sup style="padding-right: 3px;font-size: 18px;top: -1.8em;">3</sup><img style="height:30px;" src="https://cloud.infini-ai.com/assets/svg/logo_new.ceae5ff61719286384587.svg"> -->
+                            <sup style="padding-right: 3px;font-size: 18px;top: -1.8em;">3</sup><img style="height:30px;" src="figs/uoft.png">
+						</td>
+					</tr>
+				</tbody>
+			</table>
 
-<section class="hero is-light is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-steve">
-          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/steve.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-chair-tp">
-          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/chair-tp.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-shiba">
-          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/shiba.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-fullbody">
-          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/fullbody.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-blueshirt">
-          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/blueshirt.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-mask">
-          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/mask.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-coffee">
-          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/coffee.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-toby">
-          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/toby2.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+            <p><sup>*</sup>Equal contribution</p>
 
+        <!-- <table align="center" width="500px">
+            <tbody>
+                <tr>
+                    <td align="center" width="500px">
+                        <center>
+                            <i><span style="font-size:14px; font-weight: 200">* corresponding author </span></i>
+                        </center>
+                    </td>
+                    <td align="center" width="500px">
+                        <center>
+                            <i><span style="font-size:14px; font-weight: 200">&#8224; equal contribution </span></i>
+                        </center>
+                    </td>
+                </tr>
+            </tbody>
+        </table> -->
 
-<section class="section">
-  <div class="container is-max-desktop">
-    <!-- Abstract. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <p>
-            We present the first method capable of photorealistically reconstructing a non-rigidly
-            deforming scene using photos/videos captured casually from mobile phones.
-          </p>
-          <p>
-            Our approach augments neural radiance fields
-            (NeRF) by optimizing an
-            additional continuous volumetric deformation field that warps each observed point into a
-            canonical 5D NeRF.
-            We observe that these NeRF-like deformation fields are prone to local minima, and
-            propose a coarse-to-fine optimization method for coordinate-based models that allows for
-            more robust optimization.
-            By adapting principles from geometry processing and physical simulation to NeRF-like
-            models, we propose an elastic regularization of the deformation field that further
-            improves robustness.
-          </p>
-          <p>
-            We show that <span class="dnerf">Nerfies</span> can turn casually captured selfie
-            photos/videos into deformable NeRF
-            models that allow for photorealistic renderings of the subject from arbitrary
-            viewpoints, which we dub <i>"nerfies"</i>. We evaluate our method by collecting data
-            using a
-            rig with two mobile phones that take time-synchronized photos, yielding train/validation
-            images of the same pose at different viewpoints. We show that our method faithfully
-            reconstructs non-rigidly deforming scenes and reproduces unseen views with high
-            fidelity.
-          </p>
-        </div>
-      </div>
-    </div>
-    <!--/ Abstract. -->
+        <hr>
+        <br>
 
-    <!-- Paper video. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Video</h2>
-        <div class="publication-video">
-          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
-                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
-      </div>
-    </div>
-    <!--/ Paper video. -->
-  </div>
-</section>
+        <table width="800" border="0" align="center" class="menu"
+            style="margin-bottom: 20px;margin-top: 20px;font-weight: bold;font-size: 20px;">
+            <tbody>
+                <tr>
+                    <!-- arxiv link -->
+                    <td align="center">
+						<span class="bg-near-black f6 no_hover br-pill ph3 pv2 dib" style="vertical-align:top;height:26px">
+							<a style="color:inherit;text-decoration:none;font-size:15px" href="https://arxiv.org/pdf/2405.17403.pdf" target="_blank">
+                            <i height="20px" style="padding-right:2px;font-size:20px" class="ai ai-arxiv" aria-hidden="true"></i>
+							Paper
+							</a>
+						</span>
+                    </td>
+                    <!-- github link -->
+                    <td align="center">
+                    <span class="bg-near-black f6 no_hover br-pill ph3 pv2 dib" style="vertical-align:top;height:26px">
+                        <a style="color:inherit;text-decoration:none;font-size:15px" href="https://github.com/NUS-HPC-AI-Lab/EDF" target="_blank">
+                        <svg height="20px" style="padding-right: 2px;font-size: 20px;" class="svg-inline--fa fa-github fa-w-16" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg>
+                        Code
+                        </a>
+                    </span>
+                    </td>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+	</center>
+		<br>
+        <hr>
+		  <table align=center width=1000px>
+            <tr>
+				<td align=center width=1300px>
+                    <img class="round" style="width:100px" src="figs/logo.png">
+                    <h1 class="title is-3">
+                        <span style="color: rgb(71, 140, 237);">Spee</span><span style="color: orange;">D</span>
+                        <span style="color: black;">: Closer Look at Time Steps</span></h1>
+				  <center>
+                    $$
+                    \text{Take a closer look at process increments }\delta_{t}:=x_{t+1}-x_{t} \text{ over time steps } t \text{.}
+                    $$
+                    <img class="round" style="width:1000px" src="figs/Findings.png"/>
+                    </center>
+                </td>
+			</tr>
+		</table>
 
 
-<section class="section">
-  <div class="container is-max-desktop">
+		<p>
+				
+		</p>
+	      <hr>
 
-    <div class="columns is-centered">
+	  		  <center><h1>Abstract</h1></center>
+			  <tr>
+                <td align=center width=1300px>
+                    <center>
+                    <p style="width: 950px; text-align: left;
+                    ">
+                        Dataset distillation has demonstrated strong performance on simple datasets like CIFAR, MNIST, and
+                        TinyImageNet but struggles to achieve similar results in more complex scenarios. In this paper,
+                        we propose <b>EDF</b> (<b>e</b>mphasizes the <b>d</b>iscriminative <b>f</b>eatures), a dataset
+                        distillation method that enhances key discriminative regions in synthetic images using Grad-CAM
+                        activation maps. Our approach is inspired by a key observation: in simple datasets, high-activation
+                        areas typically occupy most of the image, whereas in complex scenarios, the size of these areas
+                        is much smaller. Unlike previous methods that treat all pixels equally when synthesizing images,
+                        EDF uses Grad-CAM activation maps to enhance high-activation areas. From a supervision perspective,
+                        we downplay supervision signals that have lower losses, as they contain common patterns. Additionally,
+                        to help the DD community better explore complex scenarios, we build the Complex Dataset Distillation
+                        (Comp-DD) benchmark by meticulously selecting sixteen subsets, eight easy and eight hard, from ImageNet-1K.
+                        In particular, EDF consistently outperforms SOTA results in complex scenarios, such as ImageNet-1K subsets.
+                        Hopefully, more researchers will be inspired and encouraged to improve the practicality and efficacy of DD.
+                            </p>
+                        </center>
+                </td>
+                
+			  </tr>
 
-      <!-- Visual Effects. -->
-      <div class="column">
-        <div class="content">
-          <h2 class="title is-3">Visual Effects</h2>
-          <p>
-            Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
-            would be impossible without nerfies since it would require going through a wall.
-          </p>
-          <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/dollyzoom-stacked.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-      </div>
-      <!--/ Visual Effects. -->
+            <hr>
 
-      <!-- Matting. -->
-      <div class="column">
-        <h2 class="title is-3">Matting</h2>
-        <div class="columns is-centered">
-          <div class="column content">
-            <p>
-              As a byproduct of our method, we can also solve the matting problem by ignoring
-              samples that fall outside of a bounding box during rendering.
-            </p>
-            <video id="matting-video" controls playsinline height="100%">
-              <source src="./static/videos/matting.mp4"
-                      type="video/mp4">
-            </video>
-          </div>
+	  		  <center><h1>Motivation</h1></center>
+			  <tr>
+                <td align=center width=1300px>
+                    <center>
+                        <img class="round" style="width:600px; height: 400px" src="figs/Motivation.png"/></img>
+                        <p style="width: 950px; text-align: left;
+                        ">
+                            Dataset distillation has demonstrated strong performance on simple datasets like CIFAR, MNIST, and
+                            TinyImageNet but struggles to achieve similar results in more complex scenarios. In this paper,
+                            we propose <b>EDF</b> (<b>e</b>mphasizes the <b>d</b>iscriminative <b>f</b>eatures), a dataset
+                            distillation method that enhances key discriminative regions in synthetic images using Grad-CAM
+                            activation maps. Our approach is inspired by a key observation: in simple datasets, high-activation
+                            areas typically occupy most of the image, whereas in complex scenarios, the size of these areas
+                            is much smaller. Unlike previous methods that treat all pixels equally when synthesizing images,
+                            EDF uses Grad-CAM activation maps to enhance high-activation areas. From a supervision perspective,
+                            we downplay supervision signals that have lower losses, as they contain common patterns. Additionally,
+                            to help the DD community better explore complex scenarios, we build the Complex Dataset Distillation
+                            (Comp-DD) benchmark by meticulously selecting sixteen subsets, eight easy and eight hard, from ImageNet-1K.
+                            In particular, EDF consistently outperforms SOTA results in complex scenarios, such as ImageNet-1K subsets.
+                            Hopefully, more researchers will be inspired and encouraged to improve the practicality and efficacy of DD.
+                        </p>
+                        </center>
+                </td>
 
-        </div>
-      </div>
-    </div>
-    <!--/ Matting. -->
+			  </tr>
 
-    <!-- Animation. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Animation</h2>
+		  <hr>
+          <center><h1>Method</h1></center>
+          <tr>
+            <td align=center width=1300px>
+              <center>
+                  <img class="round" style="width:900px; height: 500px" src="figs/Method.png"/></img>
+                  <p style="width: 1000px; text-align: left;
+                  ">
+                    Our approach, <b>Emphasize Discriminative Features</b> (EDF), enhances discriminative features in synthetic images during distillation.
+                      As shown in the figure, EDF first trains trajectories on real images \(T \) and synthetic images \(S \) and computes the trajectory matching loss.
+                      Then, <i>Common Pattern Dropout</i> filters out low-loss supervision signals, retaining high-loss ones for backpropagation.
+                      After obtaining gradients for the synthetic images, <i>Discriminative Area Enhancement</i> uses dynamically extracted Grad-CAM activation maps to
+                      rescale pixel gradients, focusing updates on discriminative regions.
+                  </p>
+                  
+              </center>
+            </td>
+        </tr>
 
-        <!-- Interpolating. -->
-        <h3 class="title is-4">Interpolating states</h3>
-        <div class="content has-text-justified">
-          <p>
-            We can also animate the scene by interpolating the deformation latent codes of two input
-            frames. Use the slider here to linearly interpolate between the left frame and the right
-            frame.
-          </p>
-        </div>
-        <div class="columns is-vcentered interpolation-panel">
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_start.jpg"
-                 class="interpolation-image"
-                 alt="Interpolate start reference image."/>
-            <p>Start Frame</p>
-          </div>
-          <div class="column interpolation-video-column">
-            <div id="interpolation-image-wrapper">
-              Loading...
-            </div>
-            <input class="slider is-fullwidth is-large is-info"
-                   id="interpolation-slider"
-                   step="1" min="0" max="100" value="0" type="range">
-          </div>
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_end.jpg"
-                 class="interpolation-image"
-                 alt="Interpolation end reference image."/>
-            <p class="is-bold">End Frame</p>
-          </div>
-        </div>
-        <br/>
-        <!--/ Interpolating. -->
+        <hr>
+          <center><h1>Comp-DD Benchmark</h1></center>
+          <tr>
+            <td align=center width=1300px>
+              <center>
+                  <img class="round" style="width:900px; height: 500px" src="figs/Benchmark.png"/></img>
+                  <p style="width: 1000px; text-align: left;
+                  ">
+                      We introduce the <b>Comp</b>lex <b>D</b>ataset <b>D</b>istillation (Comp-DD) benchmark, which is constructed by selecting subsets from ImageNet-1K based on their complexity.
+                      We define the complexity metrics of the \(i\)-th image is computed as \(\frac{\sum_{h}\sum_{w} \mathbb{1}[M^{i}_{h,w} \geq 0.5]}{H \cdot W}\). The complexity of each class is
+                      then determined by averaging the complexity scores across all images within that class. To extract new subsets, we first manually identify representative categories in
+                      ImageNet-1K with sufficient numbers of classes, then construct an easy and a hard subset with in each category. Each subset consists of ten classes.
+                      This benchmark represents an early and pioneering effort to address dataset distillation in complex scenarios. Although there are numerous benchmarks for simpler tasks, there
+                      is a notable absence of benchmarks designed specifically for complex scenarios. This gap presents a significant challenge to advancing research in this area and limits the
+                      practical application of dataset distillation. To bridge this gap, we propose the first dataset distillation benchmark explicitly built around scenario complexity, aiming to
+                      promote further exploration within the DD community.
+                  </p>
 
-        <!-- Re-rendering. -->
-        <h3 class="title is-4">Re-rendering the input video</h3>
-        <div class="content has-text-justified">
-          <p>
-            Using <span class="dnerf">Nerfies</span>, you can re-render a video from a novel
-            viewpoint such as a stabilized camera by playing back the training deformations.
-          </p>
-        </div>
-        <div class="content has-text-centered">
-          <video id="replay-video"
-                 controls
-                 muted
-                 preload
-                 playsinline
-                 width="75%">
-            <source src="./static/videos/replay.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <!--/ Re-rendering. -->
+              </center>
+            </td>
+        </tr>
 
-      </div>
-    </div>
-    <!--/ Animation. -->
+        <hr>
+          <center><h1>Results</h1></center>
+          <tr>
+            <td align=center width=1300px>
+              <center>
+                  <img class="round" style="width:1000px" src="figs/Results.png"/>
+			  <p style="width: 1000px; text-align: left;
+                  ">
+				  	EDF achieves new SOTAs on various ImageNet-1K subsets, including ImageNette, ImageWoof, ImageMeow, ImageFruit, ImageYellow, and ImageSquawk.
+              </p>
+              </center>
 
+            </td>
+        </tr>
 
-    <!-- Concurrent Work. -->
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Related Links</h2>
+<!--		<table align=center width=1000px>-->
+<!--			<tr>-->
+<!--				<td width=1000px>-->
+<!--					<left>-->
+<!--						<center><h1>BibTeX</h1></center>-->
+<!--						<left>-->
+<!--							<code>-->
+<!--                                @article{wang2024closer, <br>-->
+<!--                                    title={A Closer Look at Time Steps is Worthy of Triple Speed-Up for Diffusion Model Training}, <br>-->
+<!--                                    author={Kai Wang, Yukun Zhou, Mingjia Shi, Zhihang Yuan, Yuzhang Shang, Xiaojiang Peng, Hanwang Zhang and Yang You}, <br>-->
+<!--                                    year={2024}, <br>-->
+<!--                                    journal={arXiv preprint arXiv:2405.17403}, <br>-->
+<!--                              }-->
+<!--							</code>-->
 
-        <div class="content has-text-justified">
-          <p>
-            There's a lot of excellent work that was introduced around the same time as ours.
-          </p>
-          <p>
-            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
-          </p>
-          <p>
-            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
-            both use deformation fields to model non-rigid scenes.
-          </p>
-          <p>
-            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
-          </p>
-          <p>
-            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
-          </p>
-        </div>
-      </div>
-    </div>
-    <!--/ Concurrent Work. -->
+<!--						</left>-->
+<!--					</left>-->
+<!--				</td>-->
+<!--			</tr>-->
+<!--		</table>-->
+		<br>
+		<br>
 
-  </div>
-</section>
-
-
-<section class="section" id="BibTeX">
-  <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <pre><code>@article{park2021nerfies,
-  author    = {Park, Keunhong and Sinha, Utkarsh and Barron, Jonathan T. and Bouaziz, Sofien and Goldman, Dan B and Seitz, Steven M. and Martin-Brualla, Ricardo},
-  title     = {Nerfies: Deformable Neural Radiance Fields},
-  journal   = {ICCV},
-  year      = {2021},
-}</code></pre>
-  </div>
-</section>
-
-
-<footer class="footer">
-  <div class="container">
-    <div class="content has-text-centered">
-      <a class="icon-link"
-         href="./static/videos/nerfies_paper.pdf">
-        <i class="fas fa-file-pdf"></i>
-      </a>
-      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
-        <i class="fab fa-github"></i>
-      </a>
-    </div>
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-          <p>
-            This website is licensed under a <a rel="license"
-                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
-          <p>
-            This means you are free to borrow the <a
-              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
-            we just ask that you link back to this page in the footer.
-            Please remember to remove the analytics code included in the header of the website which
-            you do not want on your website.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-
-</body>
-</html>
+		<hr>
+          <tr>
+            <td align=center width=1300px>
+              <center>
+					Please feel free to contact us via email at <a href="mailto:kai.wang@comp.nus.edu.sg">Kai Wang</a> or <a href="mailto:lizekai@u.nus.edu">Zekai Li</a> for any inquiries or assistance.
+              </center>
+            </td>
+        </tr>
+		<script>
+			var coll = document.getElementsByClassName("collapsible");
+			var i;
+	
+			for (i = 0; i < coll.length; i++) {
+				coll[i].addEventListener("click", function() {
+					this.classList.toggle("active");
+					var content = this.nextElementSibling;
+					if (content.style.display === "block") {
+						content.style.display = "none";
+					} else {
+						content.style.display = "block";
+					}
+				});
+			}
+		</script>
+</body>	
